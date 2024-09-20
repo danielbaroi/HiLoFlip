@@ -1,120 +1,101 @@
 import SwiftUI
-
+ 
 struct CardView: View {
     let number: Int
-    let isFaceUp: Bool
-    
+    @State private var isFaceUp = false
+    private var backgroundColor: Color {
+        let hue = Double(number) / 100.0
+        return Color(hue: hue, saturation: 0.8, brightness: 0.9)
+    }
     var body: some View {
         ZStack {
             if isFaceUp {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(colorForIndex(number))
-                    .frame(width: 100, height: 155)
-                Text("\(number)")
-                    .font(.largeTitle)
-                    .foregroundColor(.black)
-                    .padding()
-                    .background(Circle().fill(Color.black))
-                
-                if number % 10 == 0 {
-                    // Card ending with 0
-                    starInCorners()
-                } else if number % 10 == 1 {
-                    // Card ending with 1
-                    circleSlashInCorners()
-                } else if number % 10 == 2 {
-                    // Card ending with 2
-                    docOnDocInCorners()
-                }
+                    .fill(backgroundColor)
+                    .overlay(
+                        ZStack {
+                            Circle()
+                                .fill(Color.black)
+                                .frame(width: 60, height: 60)
+                            Text("\(number)")
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundColor(.white)
+                            
+                            if number % 10 == 0 {
+                                cornerSymbol(systemName: "star.fill")
+                            } else if number % 10 == 1 {
+                                cornerSymbol(systemName: "circle.slash")
+                            } else if number % 10 == 2 {
+                                cornerSymbol(systemName: "doc.on.doc.fill")
+                            }
+                        }
+                    )
             } else {
-                // Back of the card
                 RoundedRectangle(cornerRadius: 10)
                     .fill(Color.black)
-                    .frame(width: 100, height: 155)
-                VStack {
-                    Circle().stroke(Color.white, lineWidth: 2)
+                    .overlay(
+                        ZStack {
+                            Circle()
+                                .stroke(Color.white, lineWidth: 2) // Add white outline
+                                .background(Circle().fill(Color.black))
+                                .frame(width: 50, height: 50)
+                                .overlay(
+                                    Text("HI")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                )
+                                .position(x: 30, y: 40)
+                            
+                            Circle()
+                                .stroke(Color.white, lineWidth: 2) // Add white outline
+                                .background(Circle().fill(Color.black))
+                                .frame(width: 50, height: 50)
+                                .overlay(
+                                    Text("LO")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                )
+                                .position(x: 70, y: 115)
+                        }
+                    )
+            }
+        }
+        .frame(width: 100, height: 155)
+        .onTapGesture {
+            withAnimation {
+                isFaceUp.toggle()
+            }
+        }
+    }
+    private func cornerSymbol(systemName: String) -> some View {
+        Group {
+            Image(systemName: systemName)
+                .foregroundColor(.black)
+                .background(
+                    Circle()
+                        .fill(Color.white)
                         .frame(width: 30, height: 30)
-                        .overlay(Text("HI").foregroundColor(.white))
-                    Circle().stroke(Color.white, lineWidth: 2)
+                )
+                .position(x: 20, y: 20)
+            
+            Image(systemName: systemName)
+                .foregroundColor(.black)
+                .background(
+                    Circle()
+                        .fill(Color.white)
                         .frame(width: 30, height: 30)
-                        .overlay(Text("LO").foregroundColor(.white))
-                }
-            }
+                )
+                .position(x: 80, y: 135)
         }
-    }
-    
-    func colorForIndex(_ index: Int) -> Color {
-        let hue = Double(index) / 100.0
-        return Color(hue: hue, saturation: 0.8, brightness: 1)
-    }
-    
-    // Symbols based on the number's last digit
-    func starInCorners() -> some View {
-        VStack {
-            HStack {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.white)
-                Spacer()
-                Image(systemName: "star.fill")
-                    .foregroundColor(.white)
-            }
-            Spacer()
-            HStack {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.white)
-                Spacer()
-                Image(systemName: "star.fill")
-                    .foregroundColor(.white)
-            }
-        }
-        .padding()
-    }
-    
-    func circleSlashInCorners() -> some View {
-        VStack {
-            HStack {
-                Image(systemName: "circle.slash")
-                    .foregroundColor(.white)
-                Spacer()
-                Image(systemName: "circle.slash")
-                    .foregroundColor(.white)
-            }
-            Spacer()
-            HStack {
-                Image(systemName: "circle.slash")
-                    .foregroundColor(.white)
-                Spacer()
-                Image(systemName: "circle.slash")
-                    .foregroundColor(.white)
-            }
-        }
-        .padding()
-    }
-    
-    func docOnDocInCorners() -> some View {
-        VStack {
-            HStack {
-                Image(systemName: "doc.on.doc.fill")
-                    .foregroundColor(.white)
-                Spacer()
-                Image(systemName: "doc.on.doc.fill")
-                    .foregroundColor(.white)
-            }
-            Spacer()
-            HStack {
-                Image(systemName: "doc.on.doc.fill")
-                    .foregroundColor(.white)
-                Spacer()
-                Image(systemName: "doc.on.doc.fill")
-                    .foregroundColor(.white)
-            }
-        }
-        .padding()
     }
 }
-
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
-        CardView(number: 10, isFaceUp: true)
+        Group {
+            VStack(spacing: 20) {
+                
+                CardView(number: Int.random(in: 1...100))
+            }
+        }
     }
 }
