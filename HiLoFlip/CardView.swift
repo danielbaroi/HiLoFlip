@@ -1,72 +1,75 @@
 import SwiftUI
- 
+
 struct CardView: View {
-    let number: Int
-    @State private var isFaceUp = false
-    private var backgroundColor: Color {
-        let hue = Double(number) / 100.0
-        return Color(hue: hue, saturation: 0.8, brightness: 0.9)
-    }
+    let card: HiLoGame.Card
+    let action: () -> Void
+    
     var body: some View {
         ZStack {
-            if isFaceUp {
+            if card.isFaceUp {
+                // Card when face-up
                 RoundedRectangle(cornerRadius: 10)
                     .fill(backgroundColor)
                     .overlay(
                         ZStack {
                             Circle()
                                 .fill(Color.black)
-                                .frame(width: 60, height: 60)
-                            Text("\(number)")
-                                .font(.system(size: 30, weight: .bold))
+                                .frame(width: 55, height: 55)
+                            Text("\(card.value)")
+                                .font(.system(size: 26, weight: .bold))
                                 .foregroundColor(.white)
                             
-                            if number % 10 == 0 {
+                            if card.isTenPointCard {
                                 cornerSymbol(systemName: "star.fill")
-                            } else if number % 10 == 1 {
+                            } else if card.isMustPlayTwoCard {
                                 cornerSymbol(systemName: "circle.slash")
-                            } else if number % 10 == 2 {
+                            } else if card.isSkipCard {
                                 cornerSymbol(systemName: "doc.on.doc.fill")
                             }
                         }
                     )
             } else {
+                // Card when facedown (positions swapped for HI and LO)
                 RoundedRectangle(cornerRadius: 10)
                     .fill(Color.black)
                     .overlay(
                         ZStack {
+                            // "LO" at the top
                             Circle()
-                                .stroke(Color.white, lineWidth: 2) // Add white outline
+                                .stroke(Color.white, lineWidth: 2)
                                 .background(Circle().fill(Color.black))
-                                .frame(width: 50, height: 50)
-                                .overlay(
-                                    Text("HI")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .foregroundColor(.white)
-                                )
-                                .position(x: 30, y: 40)
-                            
-                            Circle()
-                                .stroke(Color.white, lineWidth: 2) // Add white outline
-                                .background(Circle().fill(Color.black))
-                                .frame(width: 50, height: 50)
+                                .frame(width: 40, height: 40) // Adjusted size for "LO"
                                 .overlay(
                                     Text("LO")
-                                        .font(.system(size: 24, weight: .bold))
+                                        .font(.system(size: 18, weight: .bold)) // Adjusted font size
                                         .foregroundColor(.white)
                                 )
-                                .position(x: 70, y: 115)
+                                .position(x: 45, y: 90) // Adjusted position for "LO"
+                            
+                            // "HI" at the bottom
+                            Circle()
+                                .stroke(Color.white, lineWidth: 2)
+                                .background(Circle().fill(Color.black))
+                                .frame(width: 40, height: 40) // Adjusted size for "HI"
+                                .overlay(
+                                    Text("HI")
+                                        .font(.system(size: 18, weight: .bold)) // Adjusted font size
+                                        .foregroundColor(.white)
+                                )
+                                .position(x: 25, y: 30) // Adjusted position for "HI"
                         }
                     )
             }
         }
-        .frame(width: 100, height: 155)
-        .onTapGesture {
-            withAnimation {
-                isFaceUp.toggle()
-            }
-        }
+        .frame(width: 70, height: 115) // Slightly adjusted card size
+        .onTapGesture(perform: action)
     }
+    
+    private var backgroundColor: Color {
+        let hue = Double(card.value) / 100.0
+        return Color(hue: hue, saturation: 0.8, brightness: 0.9)
+    }
+    
     private func cornerSymbol(systemName: String) -> some View {
         Group {
             Image(systemName: systemName)
@@ -74,7 +77,7 @@ struct CardView: View {
                 .background(
                     Circle()
                         .fill(Color.white)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 20, height: 20)
                 )
                 .position(x: 20, y: 20)
             
@@ -83,19 +86,9 @@ struct CardView: View {
                 .background(
                     Circle()
                         .fill(Color.white)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 20, height: 20)
                 )
-                .position(x: 80, y: 135)
-        }
-    }
-}
-struct CardView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            VStack(spacing: 20) {
-                
-                CardView(number: Int.random(in: 1...100))
-            }
+                .position(x: 50, y: 95)
         }
     }
 }

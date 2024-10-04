@@ -30,6 +30,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D590168B2CAF5E300034F6A6 /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
 		D5BB92382C9C97880023DB0C /* HiLoFlip */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = HiLoFlip;
@@ -75,6 +80,7 @@
 		D5BB922D2C9C97880023DB0C = {
 			isa = PBXGroup;
 			children = (
+				D590168B2CAF5E300034F6A6 /* Models */,
 				D5BB92382C9C97880023DB0C /* HiLoFlip */,
 				D5BB92492C9C97890023DB0C /* HiLoFlipTests */,
 				D5BB92532C9C97890023DB0C /* HiLoFlipUITests */,
@@ -108,6 +114,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				D590168B2CAF5E300034F6A6 /* Models */,
 				D5BB92382C9C97880023DB0C /* HiLoFlip */,
 			);
 			name = HiLoFlip;
